@@ -86,13 +86,13 @@ app.use(function (req, res, next) {
 });
 
 // Get values from env vars or defaults where not provided
-let port = process.env.PORT || 3000;
+let port = process.env.PORT || 8000;
 
 // Start the server
 app.listen(port, async () => {
   await sequelize.authenticate();
   // console.log(__dirname)
-  await sequelize.sync({ alter: true });
+  //await sequelize.sync({ alter: true });
   //await sequelize.sync({ alter: true, force: true });
 
   console.log(`Server Started on port ${port}`);
