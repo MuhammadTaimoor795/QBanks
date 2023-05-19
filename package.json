@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server",
-    "deploy": "git add . && git commit -m \"deployment\" && git push"
+    "deploy": "git add . && git commit -m \"deployment\" && git push -u origin master"
   },
   "keywords": [],
   "author": "",
