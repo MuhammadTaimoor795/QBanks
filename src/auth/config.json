@@ -1,0 +1,11 @@
+{
+  "emailFrom": "info@node-mysql-signup-verification-api.com",
+  "smtpOptions": {
+    "host": "smtp.ethereal.email",
+    "port": 587,
+    "auth": {
+      "user": "naomie10@ethereal.email",
+      "pass": "UTngVmapdppngWmW3b"
+    }
+  }
+}

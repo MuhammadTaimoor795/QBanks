@@ -1,0 +1,33 @@
+{
+  "development": {
+    "username": "u633667574_user1",
+    "password": "user1Qbanks@",
+    "database": "u633667574_QBank",
+    "host": "154.49.142.52",
+    "dialect": "mysql",
+    "multipleStatements": true,
+    "define": {
+      "timestamps": false
+    }
+  },
+  "test": {
+    "username": "u633667574_user1",
+    "password": "user1Qbanks@",
+    "database": "u633667574_QBank",
+    "host": "154.49.142.52",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  },
+  "production": {
+    "username": "u633667574_user1",
+    "password": "user1Qbanks@",
+    "database": "u633667574_QBank",
+    "host": "154.49.142.52",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  }
+}
