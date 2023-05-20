@@ -30,6 +30,8 @@ const schemas = {
       confirmpassword: Joi.string().required().valid(Joi.ref("password")),
       description: Joi.string().required(),
       country: Joi.string().required(),
+
+      //
     }),
     resetPassword: Joi.object({
       password: new PasswordComplexity({
