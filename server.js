@@ -95,7 +95,8 @@ app.listen(port, async () => {
   //await sequelize.sync({ alter: true });
   //await sequelize.sync({ alter: true, force: true });
 
-  console.log(`Server Started on port ${port}`);
+  //
+  console.log(`Server Started on This Port  ${port}`);
 
   console.log("DB connected");
 });
