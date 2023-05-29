@@ -1,33 +1,26 @@
 {
   "development": {
-    "username": "u633667574_user1",
-    "password": "user1Qbanks@",
-    "database": "u633667574_QBank",
-    "host": "154.49.142.52",
+    "username": "root",
+    "password": "",
+    "database": "qbanks",
+    "host": "localhost",
     "dialect": "mysql",
-    "multipleStatements": true,
-    "define": {
-      "timestamps": false
-    }
+    "logging": false
   },
   "test": {
-    "username": "u633667574_user1",
-    "password": "user1Qbanks@",
-    "database": "u633667574_QBank",
-    "host": "154.49.142.52",
+    "username": "root",
+    "password": "",
+    "database": "qbank",
+    "host": "localhost",
     "dialect": "mysql",
-    "define": {
-      "timestamps": false
-    }
+    "logging": false
   },
   "production": {
-    "username": "u633667574_user1",
-    "password": "user1Qbanks@",
-    "database": "u633667574_QBank",
-    "host": "154.49.142.52",
+    "username": "root",
+    "password": "",
+    "database": "qbank",
+    "host": "localhost",
     "dialect": "mysql",
-    "define": {
-      "timestamps": false
-    }
+    "logging": false
   }
 }
