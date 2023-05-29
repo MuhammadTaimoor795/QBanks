@@ -553,6 +553,105 @@ const userPasswordUpdate = async (req, res, next) => {
   }
 };
 
+const userQbank = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let user = await models.User.findOne({
+      where: {
+        id,
+      },
+      include: [
+        {
+          required: false,
+          where: {
+            active: true,
+          },
+          model: models.UserQbank,
+        },
+      ],
+    });
+
+    if (user) {
+      return res.status(200).json(success(user, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
+
+const userNewTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let testid = req.body.testid;
+    // console.table({ id, testid });
+    let test = await findtest(testid, id);
+
+    let usertest = await models.UserTest.create({
+      UserId: id,
+      TestId: test.id,
+    });
+    if (usertest) {
+      return res.status(201).json(success("Test Started ", res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
+
+async function findtest(id, userid) {
+  let test = await models.Test.findOne({
+    where: {
+      id,
+    },
+  });
+
+  //console.log("test", test);
+
+  if (!test) {
+    throw new ApiError(`test Not Found with this is ${id}`, {
+      status: 404,
+    });
+  }
+
+  if (!test.isactive) {
+    throw new ApiError(`Test is blocked By the Admin `, {
+      status: 400,
+    });
+  }
+
+  console.log("useri", id);
+  console.log("test.QBankId", test.QBankId);
+
+  let userqbank = await models.UserQbank.findOne({
+    where: {
+      UserId: userid,
+      QBankId: test.QBankId,
+      active: true,
+    },
+  });
+
+  if (userqbank) {
+    return test;
+  }
+  if (!userqbank) {
+    throw new ApiError(
+      `You can not Attempt this test due As this test in not Allowed to you By Admin`,
+      {
+        status: 400,
+      }
+    );
+  }
+}
 module.exports = {
   registerUserController,
   verificationEmail,
@@ -565,4 +664,6 @@ module.exports = {
   userImgController,
   userProfile,
   userProfileUpdate,
+  userQbank,
+  userNewTest,
 };

@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       Test.belongsTo(models.QBanks);
 
       Test.hasMany(models.Question);
+
+      Test.hasMany(models.UserTest);
     }
   }
   Test.init(

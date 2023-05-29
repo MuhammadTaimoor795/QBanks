@@ -4,7 +4,6 @@ const db = require("../../../models/index");
 const { ApiError } = require("../../utils/error");
 
 async function findQbanksByid(id) {
-  console.log("id", id);
   let qbank = await models.QBanks.findOne({
     where: {
       id,
@@ -17,7 +16,6 @@ async function findQbanksByid(id) {
       status: 400,
     });
   } else {
-    console.log("qbank", qbank);
     return qbank;
   }
 }

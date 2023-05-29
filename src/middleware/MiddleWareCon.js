@@ -9,7 +9,7 @@ async function authenticateToken(req, res, next) {
     // return res.status(401).json({ message: "Access Denied" });
     return res.status(401).json(errorResponse("Access Denied", res.statusCode));
   } else {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
       if (err) {
         //return res.status(403).json({ message: "You are Unauthorized" });
         return res
@@ -18,6 +18,19 @@ async function authenticateToken(req, res, next) {
       } else {
         req.user = user;
         next();
+        // let finduser = await model.User.findOne({
+        //   where: {
+        //     id: user,
+        //   },
+        // });
+        // if (finduser) {
+        //   req.user = user;
+        //   next();
+        // } else {
+        //   return res
+        //     .status(403)
+        //     .json(errorResponse("You are Unauthorized", res.statusCode));
+        // }
       }
     });
   }

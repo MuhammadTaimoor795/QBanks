@@ -10,7 +10,7 @@ async function adminaddQuestion(testid, description) {
     description,
   });
   if (addquestion) {
-    return true;
+    return addquestion.id;
   }
 }
 
@@ -32,8 +32,10 @@ async function admintestQuestions(id) {
     include: [
       {
         model: models.Option,
+        order: [["createdAt", "ASC"]],
       },
     ],
+    order: [["createdAt", "ASC"]],
   });
   if (!question) {
     return [];

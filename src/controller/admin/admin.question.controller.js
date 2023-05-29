@@ -11,13 +11,24 @@ const {
   adminunblockQuestion,
   adminupdateQuestion,
 } = require("../../services/admin/admin.question.service");
+const {
+  adminaddquestionOption,
+} = require("../../services/admin/admin.option.service");
 
 module.exports = {
   //This service is responsible for creating a modirator in the database
   AdminAddQuestion: async (req, res, next) => {
     try {
-      const { testid, description } = req.body;
+      const { testid, description, options } = req.body;
       let question = await adminaddQuestion(testid, description);
+
+      for (let item of options) {
+        let addoption = await adminaddquestionOption(
+          question,
+          item.name,
+          item.istrue
+        );
+      }
       if (question) {
         return res
           .status(201)

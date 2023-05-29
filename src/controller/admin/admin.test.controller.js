@@ -39,7 +39,9 @@ module.exports = {
 
   AdminQBanksTest: async (req, res, next) => {
     try {
+      console.log("data");
       let id = req.query.id;
+      console.log("id", id);
       let test = await adminqbanksTest(id);
       if (test) {
         return res.status(200).json(success(test, res.statusCode));

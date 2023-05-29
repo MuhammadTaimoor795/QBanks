@@ -22,6 +22,9 @@ const {
   UnlockQBanks,
   LockQBanks,
   AddQBanksToUser,
+  RemoveQBanksToUser,
+  QBanksUser,
+  QBanksUserAdmin,
 } = require("../controller/admin/qbanks.controller");
 const {
   AdminCreateTest,
@@ -45,6 +48,10 @@ const {
   AdminLockOption,
   AdminUnLockOption,
 } = require("../controller/admin/admin.option.controller");
+const {
+  validationSchemaQuery,
+  newschem,
+} = require("../middleware/joivalidationQuery");
 
 // Users
 router.get("/users", adminCheck, getAllUsers);
@@ -66,7 +73,7 @@ router.get("/qbank", adminCheck, AllQBanks);
 router.get("/qbank/:id", adminCheck, FindByIdQBanks);
 router.patch("/qbank/unblock/:id", adminCheck, UnlockQBanks);
 router.patch("/qbank/block/:id", adminCheck, LockQBanks);
-router.post("/qbank/user/add", adminCheck, AddQBanksToUser);
+// router.post("/qbank/user/add", adminCheck, AddQBanksToUser);
 
 // Test
 router.post(
@@ -122,6 +129,28 @@ router.patch(
   adminCheck,
   validationSchema(schemas.Option.update),
   AdminUpdateOption
+);
+
+/// Assgin Qbanks to User
+router.post(
+  "/qbank/user",
+  adminCheck,
+  validationSchema(schemas.Qbanks.user),
+  AddQBanksToUser
+);
+
+router.patch(
+  "/qbank/user",
+  adminCheck,
+  validationSchema(schemas.Qbanks.user),
+  RemoveQBanksToUser
+);
+
+router.get(
+  "/qbank/user/get",
+  adminCheck,
+  validationSchemaQuery(newschem.Qbanks.userbanks),
+  QBanksUserAdmin
 );
 
 // Options

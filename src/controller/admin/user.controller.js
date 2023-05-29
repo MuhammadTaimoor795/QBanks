@@ -7,6 +7,7 @@ const {
   findUserByIdAdmin,
   blockUserAdmin,
   activateUserAccount,
+  assignqbanksAdmin,
 } = require("../../services/admin/user.service");
 
 module.exports = {

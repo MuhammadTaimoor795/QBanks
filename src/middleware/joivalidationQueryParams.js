@@ -1,10 +1,10 @@
 const Joi = require("joi");
 const { validation } = require("../utils/constants");
 
-const validationSchemaQuery = (schema) => {
+const joivalidationQueryParams = (schema) => {
   return async (req, res, next) => {
     try {
-      await schema.validateAsync(req.query);
+      await schema.validateAsync(req.params);
       next();
     } catch (error) {
       const message = error.message.replace(/"/g, "");
@@ -15,7 +15,7 @@ const validationSchemaQuery = (schema) => {
 
 // User Dragon Object
 
-const newschem = {
+const paramsSchema = {
   Qbanks: {
     userbanks: Joi.object({
       id: Joi.string().required(),
@@ -27,4 +27,4 @@ const newschem = {
     // }),
   },
 };
-module.exports = { validationSchemaQuery, newschem };
+module.exports = { joivalidationQueryParams, paramsSchema };

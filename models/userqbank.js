@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   UserQbank.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
       active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

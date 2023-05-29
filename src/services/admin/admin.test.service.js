@@ -44,8 +44,8 @@ async function adminTestByname(name) {
     return false;
   }
 }
-async function adminqbanksTest(isactive, id) {
-  const where = {};
+async function adminqbanksTest(id) {
+  //const where = {};
   // if (isactive === "true") {
   //   console.log("yes");
   //   where.isactive = true;
@@ -56,15 +56,19 @@ async function adminqbanksTest(isactive, id) {
   //   where.isactive = false;
   //   where.QBankId = id;
   // }
-  where.QBankId = id;
+  //where.QBankId = id;
   let test = await models.Test.findAll({
-    where,
+    where: {
+      QBankId: id,
+    },
     include: [
       {
         model: models.Question,
+        order: [["createdAt", "ASC"]],
         include: [
           {
             model: models.Option,
+            order: [["createdAt", "ASC"]],
           },
         ],
       },

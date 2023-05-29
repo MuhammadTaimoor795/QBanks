@@ -30,6 +30,7 @@ async function adminquestionOption(id) {
   where.QuestionId = id;
   let option = await models.Option.findAll({
     where,
+    order: [["createdAt", "ASC"]],
   });
   if (!option) {
     return [];

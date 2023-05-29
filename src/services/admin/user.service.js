@@ -1,6 +1,7 @@
 const models = require("../../../models/index");
 const { Op } = require("sequelize");
 const { ApiError } = require("../../utils/error");
+const { findQbanksByid } = require("../user/user.qbanks.service");
 
 const findUserByEmailAdmin = async (email) => {
   email = email.toLowerCase();
@@ -66,10 +67,25 @@ const findUserByIdAdmin = async (id) => {
   }
 };
 
+// const assignqbanksAdmin = async (qbankid, id) => {
+//   await findUserByIdAdmin(id);
+//   await findQbanksByid(qbankid);
+
+//   let qbank = await models.UserQbank.create({
+//     UserId: id,
+//     QBankId: qbankid,
+//   });
+
+//   if (qbank) {
+//     return true;
+//   }
+// };
+
 module.exports = {
   findUserByEmailAdmin,
   blockUserAdmin,
   unblockUserAdmin,
   findUserByIdAdmin,
   activateUserAccount,
+  // assignqbanksAdmin,
 };

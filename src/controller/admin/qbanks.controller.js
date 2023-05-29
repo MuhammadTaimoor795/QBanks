@@ -122,20 +122,150 @@ module.exports = {
       let user = await findUserById(id);
 
       // add Qbanks to user
-      let userqbank = await models.UserQbank.create({
+
+      console.log("q", qbank.id);
+      console.log("u", user.id);
+      let finduserqbank = await models.UserQbank.findOne({
+        where: {
+          QBankId: qbank.id,
+          UserId: user.id,
+          active: true,
+        },
+      });
+
+      console.log("finduserqbank", finduserqbank);
+
+      if (finduserqbank) {
+        return res
+          .status(400)
+          .json(
+            errorResponse(
+              `This ${qbank.name} is already assign  the user ${user.username} `,
+              res.status
+            )
+          );
+      }
+
+      let isnotacive = await models.UserQbank.findOne({
+        where: {
+          QBankId: qbank.id,
+          UserId: user.id,
+          active: false,
+        },
+      });
+
+      if (!isnotacive) {
+        let userqbank = await models.UserQbank.create({
+          QBankId: qbank.id,
+          UserId: user.id,
+        });
+
+        if (userqbank) {
+          return res
+            .status(201)
+            .json(
+              success(
+                `This ${qbank.name} to the user ${user.username} `,
+                res.statusCode
+              )
+            );
+        }
+      }
+      //
+      let reactivate = await models.UserQbank.update(
+        { active: true },
+        {
+          where: {
+            QBankId: qbank.id,
+            UserId: user.id,
+          },
+        }
+      );
+      if (reactivate) {
+        return res
+          .status(201)
+          .json(
+            success(
+              `This ${qbank.name} to the user ${user.username} `,
+              res.statusCode
+            )
+          );
+      }
+    } catch (error) {
+      if (error.status === undefined) {
+        error.status = 500;
+      }
+      return res
+        .status(error.status)
+        .json(errorResponse(error.message, error.status));
+    }
+  },
+
+  RemoveQBanksToUser: async (req, res, next) => {
+    try {
+      let id = req.body.userid;
+      let qbankid = req.body.qbankid;
+
+      console.table({ qbankid, id });
+      let qbank = await findQbanksByid(qbankid);
+      let user = await findUserById(id);
+
+      // add Qbanks to user
+
+      let finduserqbank = await models.UserQbank.findOne({
         QBankId: qbank.id,
         UserId: user.id,
       });
+
+      if (!finduserqbank) {
+        return res
+          .status(400)
+          .json(
+            errorResponse(
+              `This ${qbank.name} is not Present  in the user ${user.username} `,
+              res.status
+            )
+          );
+      }
+      let userqbank = await models.UserQbank.update(
+        { active: false },
+        { where: { QBankId: qbank.id, UserId: user.id } }
+      );
 
       if (userqbank) {
         return res
           .status(201)
           .json(
             success(
-              `This Qbanks ${qbank.name} to the user ${user.name} `,
+              `This ${qbank.name} is removed from the  ${user.username} `,
               res.statusCode
             )
           );
+      }
+    } catch (error) {
+      if (error.status === undefined) {
+        error.status = 500;
+      }
+      return res
+        .status(error.status)
+        .json(errorResponse(error.message, error.status));
+    }
+  },
+  QBanksUserAdmin: async (req, res, next) => {
+    try {
+      let id = req.query.id;
+      let user = await findUserById(id);
+
+      // add Qbanks to user
+
+      let qbanks = await models.UserQbank.findAll({
+        where: {
+          UserId: user.id,
+        },
+      });
+
+      if (qbanks) {
+        return res.status(201).json(success(qbanks, res.statusCode));
       }
     } catch (error) {
       if (error.status === undefined) {

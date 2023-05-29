@@ -16,7 +16,13 @@ const {
   userImgController,
   userProfile,
   userProfileUpdate,
+  userQbank,
+  userNewTest,
 } = require("../controller/user/user-controller");
+const {
+  joivalidationQueryParams,
+  paramsSchema,
+} = require("../middleware/joivalidationQueryParams");
 
 router.post(
   "/register",
@@ -54,6 +60,16 @@ router.post(
 // router.post("/image", auth, upload.single("file"), userImgController);
 
 router.get("/profile", auth, userProfile);
+
+router.get("/qbanks", auth, userQbank);
+// router.get(
+//   "/qbanks/:id",
+//   auth,
+//   joivalidationQueryParams(paramsSchema.Qbanks.userbanks),
+//   userQbank
+// );
+
+router.post("/test", auth, userNewTest);
 
 // router.patch("/updateProfile", auth, upload.single("file"), userProfileUpdate);
 

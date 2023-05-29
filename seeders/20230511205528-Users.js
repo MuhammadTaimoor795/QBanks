@@ -97,7 +97,7 @@ module.exports = {
         let name = getQuestion();
         console.log("Quesiton", name);
         let Question = await models.Question.create({
-          name,
+          description: name,
           TestId: tests[0].dataValues.id,
         });
       }

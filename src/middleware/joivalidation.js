@@ -89,7 +89,12 @@ const schemas = {
       description: Joi.string().required(),
       type: Joi.string().required(),
     }),
+    user: Joi.object({
+      userid: Joi.string().required(),
+      qbankid: Joi.string().required(),
+    }),
   },
+
   Test: {
     create: Joi.object({
       name: Joi.string().required(),
@@ -108,6 +113,15 @@ const schemas = {
     create: Joi.object({
       testid: Joi.string().required(),
       description: Joi.string().required(),
+      options: Joi.array()
+        .items(
+          Joi.object({
+            name: Joi.string().required(),
+            isTrue: Joi.boolean().required(),
+          })
+        )
+        .min(1)
+        .required(),
     }),
     update: Joi.object({
       questionid: Joi.string().required(),

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Question.belongsTo(models.Test);
 
       Question.hasMany(models.Option);
+      Question.hasMany(models.UserResponse);
     }
   }
   Question.init(
