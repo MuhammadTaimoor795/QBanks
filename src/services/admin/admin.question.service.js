@@ -32,10 +32,10 @@ async function admintestQuestions(id) {
     include: [
       {
         model: models.Option,
-        order: [["createdAt", "ASC"]],
+        // order: [["createdAt", "ASC"]],
       },
     ],
-    order: [["createdAt", "ASC"]],
+    // order: [["createdAt", "ASC"]],
   });
   if (!question) {
     return [];
