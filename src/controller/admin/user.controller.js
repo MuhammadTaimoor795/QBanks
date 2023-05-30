@@ -28,7 +28,18 @@ module.exports = {
       }
       const users = await models.User.findAll({
         where,
+
         attributes: { exclude: ["createdAt", "updatedAt"] },
+        include: [
+          {
+            model: models.QBanks,
+            include: [
+              {
+                model: models.QBanks,
+              },
+            ],
+          },
+        ],
         limit: pageSize || null,
         offset: offset || null,
       });
