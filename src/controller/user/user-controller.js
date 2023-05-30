@@ -645,10 +645,6 @@ const userQbankTest = async (req, res, next) => {
     //     },
     //   ],
     // });
-
-    if (user) {
-      return res.status(200).json(success(user, res.statusCode));
-    }
   } catch (error) {
     if (error.status === undefined) {
       error.status = 500;
@@ -741,4 +737,5 @@ module.exports = {
   userProfileUpdate,
   userQbank,
   userNewTest,
+  userQbankTest,
 };
