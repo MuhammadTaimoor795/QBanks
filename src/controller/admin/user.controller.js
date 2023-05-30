@@ -36,6 +36,11 @@ module.exports = {
             include: [
               {
                 model: models.QBanks,
+                include: [
+                  {
+                    model: models.Test,
+                  },
+                ],
               },
             ],
           },

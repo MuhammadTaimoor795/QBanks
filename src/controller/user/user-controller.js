@@ -570,6 +570,11 @@ const userQbank = async (req, res, next) => {
           include: [
             {
               model: models.QBanks,
+              include: [
+                {
+                  model: models.Test,
+                },
+              ],
             },
           ],
         },
