@@ -18,6 +18,7 @@ const {
   userProfileUpdate,
   userQbank,
   userNewTest,
+  userQbankTest,
 } = require("../controller/user/user-controller");
 const {
   joivalidationQueryParams,
@@ -62,6 +63,8 @@ router.post(
 router.get("/profile", auth, userProfile);
 
 router.get("/qbanks", auth, userQbank);
+router.get("/qbanks/:id", auth, userQbankTest);
+
 // router.get(
 //   "/qbanks/:id",
 //   auth,

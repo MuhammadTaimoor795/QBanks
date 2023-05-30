@@ -593,6 +593,71 @@ const userQbank = async (req, res, next) => {
       .json(errorResponse(error.message, error.status));
   }
 };
+const userQbankTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let qbankid = req.params.id;
+
+    let qbank = await models.UserQbank.findOne({
+      where: {
+        UserId: id,
+        QBankId: qbankid,
+        isactive: true,
+      },
+    });
+
+    if (qbank) {
+      let tests = await models.Test.findAll({
+        where: {
+          QBankId: qbankid,
+        },
+      });
+      if (tests) {
+        return res.status(200).json(success(tests, res.statusCode));
+      }
+    } else {
+      return res
+        .status(403)
+        .json(errorResponse("You are not Allowed for this test", 403));
+    }
+
+    // let user = await models.User.findOne({
+    //   where: {
+    //     id,
+    //   },
+    //   include: [
+    //     {
+    //       required: false,
+    //       where: {
+    //         active: true,
+    //       },
+    //       model: models.UserQbank,
+    //       include: [
+    //         {
+    //           model: models.QBanks,
+    //           include: [
+    //             {
+    //               model: models.Test,
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
+
+    if (user) {
+      return res.status(200).json(success(user, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
 
 const userNewTest = async (req, res, next) => {
   try {
