@@ -16,6 +16,7 @@ async function findQbanksByid(id) {
       status: 400,
     });
   } else {
+    console.log("yes qbanks found");
     return qbank;
   }
 }

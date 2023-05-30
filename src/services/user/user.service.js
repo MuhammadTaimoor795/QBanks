@@ -135,7 +135,13 @@ const findUserById = async (userid) => {
     },
   });
 
-  return dbUser;
+  if (dbUser) {
+    return dbUser;
+  } else {
+    throw new ApiError("User Not found with this Id", {
+      status: 400,
+    });
+  }
 };
 
 const randomTokenString = async () => {

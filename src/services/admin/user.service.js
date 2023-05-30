@@ -55,6 +55,16 @@ const findUserByIdAdmin = async (id) => {
     where: {
       id,
     },
+    include: [
+      {
+        model: models.UserQbank,
+        include: [
+          {
+            model: models.QBanks,
+          },
+        ],
+      },
+    ],
     attributes: { exclude: ["createdAt", "updatedAt"] },
   });
 

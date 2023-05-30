@@ -567,6 +567,11 @@ const userQbank = async (req, res, next) => {
             active: true,
           },
           model: models.UserQbank,
+          include: [
+            {
+              model: models.QBanks,
+            },
+          ],
         },
       ],
     });

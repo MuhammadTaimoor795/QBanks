@@ -32,7 +32,7 @@ module.exports = {
         attributes: { exclude: ["createdAt", "updatedAt"] },
         include: [
           {
-            model: models.QBanks,
+            model: models.UserQbank,
             include: [
               {
                 model: models.QBanks,
@@ -40,6 +40,7 @@ module.exports = {
             ],
           },
         ],
+
         limit: pageSize || null,
         offset: offset || null,
       });

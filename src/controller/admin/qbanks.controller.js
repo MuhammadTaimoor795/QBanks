@@ -118,6 +118,8 @@ module.exports = {
     try {
       let id = req.body.userid;
       let qbankid = req.body.qbankid;
+
+      console.table({ id, qbankid });
       let qbank = await findQbanksByid(qbankid);
       let user = await findUserById(id);
 
