@@ -570,11 +570,6 @@ const userQbank = async (req, res, next) => {
           include: [
             {
               model: models.QBanks,
-              include: [
-                {
-                  model: models.Test,
-                },
-              ],
             },
           ],
         },
@@ -602,7 +597,7 @@ const userQbankTest = async (req, res, next) => {
       where: {
         UserId: id,
         QBankId: qbankid,
-        isactive: true,
+        active: true,
       },
     });
 
