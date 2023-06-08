@@ -1,6 +1,5 @@
 require("dotenv").config();
 const models = require("../../../models");
-
 const bcrypt = require("bcrypt");
 const generateAccessToken = require("../../auth/helper/generateAccessTokens");
 const jwt = require("jsonwebtoken");
@@ -26,6 +25,7 @@ const {
   userpauseTest,
   userresumeTest,
   userevulateTest,
+  userallTest,
 } = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
@@ -726,6 +726,24 @@ const userResumeTest = async (req, res, next) => {
       .json(errorResponse(error.message, error.status));
   }
 };
+const userAllTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let query = req.query.type;
+
+    let usertest = await userallTest(id, query);
+    if (usertest) {
+      return res.status(200).json(success(usertest, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
 
 const userEvualateTest = async (req, res, next) => {
   try {
@@ -733,9 +751,9 @@ const userEvualateTest = async (req, res, next) => {
     // let reponseid = req.params.uuid;
     // let istrue=req.param
 
-    let { reponseid, istrue, optionid } = req.body;
+    let { uuid, istrue, optionid } = req.body;
 
-    let usertest = await userevulateTest(reponseid, istrue, optionid);
+    let usertest = await userevulateTest(uuid, istrue, optionid);
     if (usertest) {
       return res.status(200).json(success("Successfull", res.statusCode));
     }
@@ -766,4 +784,5 @@ module.exports = {
   userPauseTest,
   userResumeTest,
   userEvualateTest,
+  userAllTest,
 };

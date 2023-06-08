@@ -27,6 +27,7 @@ const {
   userPauseTest,
   userResumeTest,
   userEvualateTest,
+  userAllTest,
 } = require("../controller/user/user-controller");
 const {
   joivalidationQueryParams,
@@ -82,6 +83,12 @@ router.get("/qbanks/:id", auth, userQbankTest);
 //   joivalidationQueryParams(paramsSchema.Qbanks.userbanks),
 //   userQbank
 // );
+router.get(
+  "/test",
+  auth,
+  validationSchemaQuery(newschem.UserTest.getusertest),
+  userAllTest
+);
 
 router.post("/test", auth, validationSchema(schemas.user.newtest), userNewTest);
 router.patch(
@@ -98,7 +105,12 @@ router.get(
   userResumeTest
 );
 
-router.post("/test/evulate", auth, userEvualateTest);
+router.post(
+  "/test/evulate",
+  auth,
+  validationSchema(schemas.user.evulatetest),
+  userEvualateTest
+);
 
 // router.patch("/updateProfile", auth, upload.single("file"), userProfileUpdate);
 

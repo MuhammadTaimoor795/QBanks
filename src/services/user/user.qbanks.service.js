@@ -171,7 +171,11 @@ async function getUserTestQuestions(id) {
     ],
   });
   if (userquestions) {
-    return userquestions;
+    let question = await usertestformat(userquestions);
+    if (question) {
+      return question;
+    }
+    //return userquestions;
   } else {
     throw new ApiError(`Invalid Test id`, {
       status: 404,
@@ -179,15 +183,38 @@ async function getUserTestQuestions(id) {
   }
 }
 
-// async function usertestformat(test)
-// {
+async function usertestformat(test) {
+  let question = [];
+  for (let item of test) {
+    let obj = {};
 
-// }
+    obj.uuid = item.id;
+    obj.isCorrect = item.isCorrect;
+    obj.questionId = item.Question.id;
+    obj.question = item.Question.description;
+    obj.explanation = item.Question.explanation;
+
+    let options = [];
+    for (let option of item.Question.Options) {
+      let newobj = {};
+      newobj.id = option.id;
+      newobj.name = option.name;
+      newobj.istrue = option.istrue;
+
+      options.push(newobj);
+    }
+    obj.options = options;
+
+    question.push(obj);
+  }
+
+  return question;
+}
 async function userpauseTest(userid, usertestid, timeleft) {
   let pausetest = await models.UserTest.update(
     {
       status: TestStatus.PAUSE,
-      completeDuration: timeleft,
+      remainingDuration: timeleft,
     },
     {
       where: {
@@ -205,6 +232,21 @@ async function userresumeTest(userid, usertestid) {
   let userquestions = await getUserTestQuestions(usertestid);
   if (userquestions) {
     return userquestions;
+  }
+}
+
+async function userallTest(userid, query) {
+  const where = {};
+  where.UserId = userid;
+  if (query !== "ALL") {
+    where.status = query;
+  }
+
+  let usertest = await models.UserTest.findAll({
+    where,
+  });
+  if (usertest) {
+    return usertest;
   }
 }
 
@@ -277,4 +319,5 @@ module.exports = {
   userpauseTest,
   userresumeTest,
   userevulateTest,
+  userallTest,
 };

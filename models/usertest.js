@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const { TestStatus } = require("../src/utils/constants");
+const { TestStatus, StudentMode } = require("../src/utils/constants");
 module.exports = (sequelize, DataTypes) => {
   class UserTest extends Model {
     /**
@@ -35,9 +35,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DECIMAL,
         allowNull: true,
       },
+      remainingDuration: {
+        type: DataTypes.DECIMAL,
+        allowNull: true,
+      },
 
       mode: {
         type: DataTypes.STRING,
+        validate: {
+          isIn: {
+            args: [Object.values(StudentMode)],
+            msg: "Invalid mode value",
+          },
+        },
       },
     },
     {

@@ -31,19 +31,6 @@ const validation = (error) => {
   };
 };
 
-const Notifications = {
-  marketplace: {
-    Offer_Accept_Type: "Offer",
-    Offer_Accept_Title: "Offer Accepted",
-    Offer_Accept_Description: "Your Offer is Accepted ",
-  },
-  // update: Joi.object({
-  //   gems: Joi.number().optional(),
-  //   price: Joi.number().optional(),
-  //   type: Joi.string().optional(),
-  // }),
-};
-
 const TestStatus = Object.freeze({
   // PENDING: "PENDING",
   // PROCESSING: "PROCESSING",
@@ -51,12 +38,34 @@ const TestStatus = Object.freeze({
   INCOMPLETED: "INCOMPLETED",
   PAUSE: "PAUSE",
 
+  // for Getting ALL Test
+  ALL: "ALL",
+
   // FAILED: "FAILED",
 });
+
+const StudentMode = Object.freeze({
+  // PROCESSING: "PROCESSING",
+  EXAM: "EXAM",
+  TUTOR: "TUTOR",
+
+  // FAILED: "FAILED",
+});
+
+// const TestStatus = Object.freeze({
+//   // PENDING: "PENDING",
+//   // PROCESSING: "PROCESSING",
+//   COMPLETED: "COMPLETED",
+//   INCOMPLETED: "INCOMPLETED",
+//   PAUSE: "PAUSE",
+
+//   // FAILED: "FAILED",
+// });
 
 module.exports = {
   validation,
   errorResponse,
   success,
   TestStatus,
+  StudentMode,
 };

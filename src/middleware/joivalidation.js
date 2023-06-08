@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const PasswordComplexity = require("joi-password-complexity");
 const { join } = require("path");
-const { validation } = require("../utils/constants");
+const { validation, StudentMode } = require("../utils/constants");
 
 const validationSchema = (schema) => {
   return async (req, res, next) => {
@@ -99,11 +99,19 @@ const schemas = {
     newtest: Joi.object({
       testid: Joi.string().required(),
       duration: Joi.number(),
-      mode: Joi.string().valid("tutor", "student").required(),
+      mode: Joi.string()
+        .valid(...Object.values(StudentMode))
+        .required(),
     }),
     pausetest: Joi.object({
       usertestid: Joi.string().required(),
       timeleft: Joi.number(),
+    }),
+
+    evulatetest: Joi.object({
+      uuid: Joi.string().required(),
+      istrue: Joi.boolean(),
+      optionid: Joi.array().items(Joi.string()),
     }),
   },
   Qbanks: {
