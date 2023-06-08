@@ -92,16 +92,50 @@ let port = process.env.PORT || 8000;
 app.listen(port, async () => {
   await sequelize.authenticate();
   // console.log(__dirname)
-  // await sequelize.sync({ alter: true });
+  await sequelize.sync({ alter: true });
   //await sequelize.sync({ alter: true, force: true });
-
   //
   console.log(`Server Started in This Port  ${port}`);
-
   console.log("DB connected");
+
+  // const fs = require("fs");
+  // const csv = require("csvtojson");
+  // const csvFilePath = "d.csv";
+  // const questions = [];
+  // csv()
+  //   .fromFile(csvFilePath)
+  //   .then((jsonArray) => {
+  //     jsonArray.forEach((row) => {
+  //       const questionText = row.questionText;
+  //       const options = [];
+  //       const correctOptions = [];
+  //       for (let i = 1; i <= 4; i++) {
+  //         const option = row[`option${i}`];
+  //         options.push(option);
+  //         const isCorrect =
+  //           row[`option${i}_isCorrect`].toUpperCase() === "TRUE";
+  //         if (isCorrect) {
+  //           correctOptions.push(option);
+  //         }
+  //       }
+  //       const question = {
+  //         questionText: questionText,
+  //         options: options,
+  //         correctOptions: correctOptions,
+  //       };
+  //       questions.push(question);
+  //     });
+  //     // Convert the questions array to JSON
+  //     const jsonData = JSON.stringify(questions);
+  //     // Do something with the JSON data (e.g., write to a file, send over the network)
+  //     console.log(jsonData);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error converting CSV to JSON:", error);
+  //   });
 });
 
+// exam mode
+// t
+
 module.exports = app;
-// "dialectOptions": {
-//   "uuid": true
-// },

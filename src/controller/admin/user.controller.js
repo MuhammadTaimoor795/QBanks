@@ -33,6 +33,7 @@ module.exports = {
         include: [
           {
             model: models.UserQbank,
+
             include: [
               {
                 model: models.QBanks,
@@ -148,3 +149,7 @@ module.exports = {
     }
   },
 };
+
+// admin where upload
+
+// exam

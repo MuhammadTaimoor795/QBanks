@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const auth = require("../middleware/MiddleWareCon");
 const adminCheck = require("../middleware/adminCheck");
-const { upload } = require("../middleware/uploadByMulter");
 const { validationSchema, schemas } = require("../middleware/joivalidation");
-
+const multer = require("multer");
+const upload = multer();
 // User Routes *****************************************************************************************************
 
 const {
@@ -33,6 +33,7 @@ const {
   AdminLockTest,
   AdminUnlockTest,
   AdminUpdateTest,
+  AdminAddTestyFile,
 } = require("../controller/admin/admin.test.controller");
 const {
   AdminAddQuestion,
@@ -81,6 +82,15 @@ router.post(
   adminCheck,
   validationSchema(schemas.Test.create),
   AdminCreateTest
+);
+
+// router.post("/test/upload", upload.single("file"), AdminAddTestyFile2);
+
+router.post(
+  "/test/bulk",
+  // adminCheck,
+  validationSchema(schemas.Test.bulkcreate),
+  AdminAddTestyFile
 );
 
 router.get("/test", adminCheck, AdminQBanksTest);

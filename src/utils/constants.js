@@ -44,8 +44,19 @@ const Notifications = {
   // }),
 };
 
+const TestStatus = Object.freeze({
+  // PENDING: "PENDING",
+  // PROCESSING: "PROCESSING",
+  COMPLETED: "COMPLETED",
+  INCOMPLETED: "INCOMPLETED",
+  PAUSE: "PAUSE",
+
+  // FAILED: "FAILED",
+});
+
 module.exports = {
   validation,
   errorResponse,
   success,
+  TestStatus,
 };

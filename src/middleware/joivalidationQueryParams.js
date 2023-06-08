@@ -20,11 +20,22 @@ const paramsSchema = {
     userbanks: Joi.object({
       id: Joi.string().required(),
     }),
+  },
+  User: {
+    resumetest: Joi.object({
+      usertestid: Joi.string().required(),
+    }),
+
     // update: Joi.object({
     //   gems: Joi.number().optional(),
     //   price: Joi.number().optional(),
     //   type: Joi.string().optional(),
     // }),
   },
+  // update: Joi.object({
+  //   gems: Joi.number().optional(),
+  //   price: Joi.number().optional(),
+  //   type: Joi.string().optional(),
+  // }),
 };
 module.exports = { joivalidationQueryParams, paramsSchema };

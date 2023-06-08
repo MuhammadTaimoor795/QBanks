@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { TestStatus } = require("../src/utils/constants");
 module.exports = (sequelize, DataTypes) => {
   class UserTest extends Model {
     /**
@@ -24,7 +25,19 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING,
-        defaultValue: "InComplete",
+        defaultValue: TestStatus.INCOMPLETED,
+      },
+      duration: {
+        type: DataTypes.DECIMAL,
+        allowNull: false,
+      },
+      completeDuration: {
+        type: DataTypes.DECIMAL,
+        allowNull: true,
+      },
+
+      mode: {
+        type: DataTypes.STRING,
       },
     },
     {

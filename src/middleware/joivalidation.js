@@ -15,6 +15,20 @@ const validationSchema = (schema) => {
   };
 };
 
+const optionSchema = Joi.object({
+  name: Joi.string().required(),
+  isTrue: Joi.boolean().required(),
+});
+
+const questionSchema = Joi.array().items(
+  Joi.object({
+    description: Joi.string().required(),
+    explanation: Joi.string().required(),
+    options: Joi.array().items(optionSchema).min(2).required(),
+  })
+);
+const decimalPattern = /^\d{1,8}(\.\d{1,2})?$/; // Pattern for up to 8 digits with up to 2 decimal places
+
 const schemas = {
   user: {
     create: Joi.object({
@@ -82,6 +96,15 @@ const schemas = {
         numeric: 1,
       }),
     }),
+    newtest: Joi.object({
+      testid: Joi.string().required(),
+      duration: Joi.number(),
+      mode: Joi.string().valid("tutor", "student").required(),
+    }),
+    pausetest: Joi.object({
+      usertestid: Joi.string().required(),
+      timeleft: Joi.number(),
+    }),
   },
   Qbanks: {
     create: Joi.object({
@@ -100,13 +123,17 @@ const schemas = {
       name: Joi.string().required(),
       description: Joi.string().required(),
       qbankid: Joi.string().required(),
-      duration: Joi.string().required(),
     }),
     update: Joi.object({
       name: Joi.string().required(),
       description: Joi.string().required(),
       testid: Joi.string().required(),
-      duration: Joi.string().required(),
+    }),
+    bulkcreate: Joi.object({
+      qbankid: Joi.string().required(),
+      name: Joi.string().required(),
+      description: Joi.string().required(),
+      question: questionSchema.required(),
     }),
   },
   Question: {

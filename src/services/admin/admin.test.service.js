@@ -4,7 +4,7 @@ const db = require("../../../models/index");
 const { ApiError } = require("../../utils/error");
 const sequelize = db.sequelize;
 
-async function admincreateTest(qbankid, name, description, duration) {
+async function admincreateTest(qbankid, name, description) {
   let findtest = await adminTestByname(name);
   if (findtest) {
     throw new ApiError("Test with this name already Exist", {
@@ -16,7 +16,6 @@ async function admincreateTest(qbankid, name, description, duration) {
     QBankId: qbankid,
     name,
     description,
-    duration,
   });
   if (createTest) {
     return true;
@@ -107,10 +106,10 @@ async function adminfindTest(id) {
   }
 }
 
-async function adminupdateTest(id, name, description, duration, id) {
+async function adminupdateTest(id, name, description, id) {
   await adminqbanksTest(id);
   let test = await models.Test.update(
-    { name, description, duration },
+    { name, description },
     { where: { id: id } }
   );
   if (test) {

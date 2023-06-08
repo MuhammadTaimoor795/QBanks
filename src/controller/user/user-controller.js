@@ -18,6 +18,15 @@ const {
   dencypttext,
 } = require("../../services/user/user.service");
 const { ApiError } = require("../../utils/error");
+const {
+  VerifyUserQbanks,
+  qbanksTests,
+  findUsertestById,
+  usernewTest,
+  userpauseTest,
+  userresumeTest,
+  userevulateTest,
+} = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
   try {
@@ -570,6 +579,11 @@ const userQbank = async (req, res, next) => {
           include: [
             {
               model: models.QBanks,
+              include: [
+                {
+                  model: models.Test,
+                },
+              ],
             },
           ],
         },
@@ -593,27 +607,22 @@ const userQbankTest = async (req, res, next) => {
     let id = req.user.id;
     let qbankid = req.params.id;
 
-    let qbank = await models.UserQbank.findOne({
-      where: {
-        UserId: id,
-        QBankId: qbankid,
-        active: true,
-      },
-    });
-
-    if (qbank) {
-      let tests = await models.Test.findAll({
-        where: {
-          QBankId: qbankid,
-        },
+    let verifyqbank = await VerifyUserQbanks(id, qbankid);
+    if (!verifyqbank) {
+      throw new ApiError("This Qbanks is not Assign to you ", {
+        status: 400,
       });
-      if (tests) {
-        return res.status(200).json(success(tests, res.statusCode));
+    }
+
+    if (verifyqbank) {
+      let test = await qbanksTests(qbankid);
+      if (test) {
+        return res.status(200).json(success(test, res.statusCode));
       }
     } else {
       return res
-        .status(403)
-        .json(errorResponse("You are not Allowed for this test", 403));
+        .status(error.status)
+        .json(errorResponse(error.message, error.status));
     }
 
     // let user = await models.User.findOne({
@@ -654,15 +663,19 @@ const userNewTest = async (req, res, next) => {
   try {
     let id = req.user.id;
     let testid = req.body.testid;
-    // console.table({ id, testid });
-    let test = await findtest(testid, id);
+    let duration = req.body.duration;
+    let mode = req.body.mode;
 
-    let usertest = await models.UserTest.create({
-      UserId: id,
-      TestId: test.id,
-    });
-    if (usertest) {
-      return res.status(201).json(success("Test Started ", res.statusCode));
+    // console.table({ id, testid });
+    let test = await findUsertestById(testid, id);
+
+    if (test) {
+      // creating new Test
+
+      let usertest = await usernewTest(id, testid, duration, mode);
+      if (usertest) {
+        return res.status(201).json(success(usertest, res.statusCode));
+      }
     }
   } catch (error) {
     if (error.status === undefined) {
@@ -674,50 +687,67 @@ const userNewTest = async (req, res, next) => {
   }
 };
 
-async function findtest(id, userid) {
-  let test = await models.Test.findOne({
-    where: {
-      id,
-    },
-  });
+const userPauseTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let usertestid = req.body.usertestid;
+    let timeleft = req.body.timeleft;
 
-  //console.log("test", test);
-
-  if (!test) {
-    throw new ApiError(`test Not Found with this is ${id}`, {
-      status: 404,
-    });
+    let usertest = await userpauseTest(id, usertestid, timeleft);
+    if (usertest) {
+      return res
+        .status(201)
+        .json(success("Test Pause Successfully", res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
   }
+};
+const userResumeTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let usertestid = req.params.usertestid;
 
-  if (!test.isactive) {
-    throw new ApiError(`Test is blocked By the Admin `, {
-      status: 400,
-    });
+    let usertest = await userresumeTest(id, usertestid);
+    if (usertest) {
+      return res.status(200).json(success(usertest, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
   }
+};
 
-  console.log("useri", id);
-  console.log("test.QBankId", test.QBankId);
+const userEvualateTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    // let reponseid = req.params.uuid;
+    // let istrue=req.param
 
-  let userqbank = await models.UserQbank.findOne({
-    where: {
-      UserId: userid,
-      QBankId: test.QBankId,
-      active: true,
-    },
-  });
+    let { reponseid, istrue, optionid } = req.body;
 
-  if (userqbank) {
-    return test;
+    let usertest = await userevulateTest(reponseid, istrue, optionid);
+    if (usertest) {
+      return res.status(200).json(success("Successfull", res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
   }
-  if (!userqbank) {
-    throw new ApiError(
-      `You can not Attempt this test due As this test in not Allowed to you By Admin`,
-      {
-        status: 400,
-      }
-    );
-  }
-}
+};
 module.exports = {
   registerUserController,
   verificationEmail,
@@ -733,4 +763,7 @@ module.exports = {
   userQbank,
   userNewTest,
   userQbankTest,
+  userPauseTest,
+  userResumeTest,
+  userEvualateTest,
 };

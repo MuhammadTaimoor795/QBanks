@@ -20,6 +20,7 @@ const newschem = {
     userbanks: Joi.object({
       id: Joi.string().required(),
     }),
+
     // update: Joi.object({
     //   gems: Joi.number().optional(),
     //   price: Joi.number().optional(),

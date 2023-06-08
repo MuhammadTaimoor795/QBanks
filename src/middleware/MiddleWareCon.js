@@ -18,19 +18,6 @@ async function authenticateToken(req, res, next) {
       } else {
         req.user = user;
         next();
-        // let finduser = await model.User.findOne({
-        //   where: {
-        //     id: user,
-        //   },
-        // });
-        // if (finduser) {
-        //   req.user = user;
-        //   next();
-        // } else {
-        //   return res
-        //     .status(403)
-        //     .json(errorResponse("You are Unauthorized", res.statusCode));
-        // }
       }
     });
   }

@@ -2,6 +2,7 @@ const models = require("../../../models/index");
 const { Op } = require("sequelize");
 const db = require("../../../models/index");
 const { ApiError } = require("../../utils/error");
+const { findQbanksByidAdmin } = require("./qbanks.service");
 const sequelize = db.sequelize;
 
 async function adminaddQuestion(testid, description) {
@@ -12,6 +13,35 @@ async function adminaddQuestion(testid, description) {
   if (addquestion) {
     return addquestion.id;
   }
+}
+
+async function adminaddTestFile(qbankid, name, description, question) {
+  let qbank = await findQbanksByidAdmin(qbankid);
+
+  if (qbank) {
+    let test = await models.Test.create({
+      QBankId: qbankid,
+      name,
+      description,
+    });
+
+    for (let item of question) {
+      let addquestion = await models.Question.create({
+        TestId: test.id,
+        description: item.description,
+        explanation: item.explanation,
+      });
+      for (let option of item.options) {
+        let addoption = await models.Option.create({
+          QuestionId: addquestion.id,
+          name: option.name,
+          istrue: option.isTrue,
+        });
+      }
+    }
+  }
+
+  return true;
 }
 
 async function admintestQuestions(id) {
@@ -105,4 +135,5 @@ module.exports = {
   adminupdateQuestion,
   adminblockQuestion,
   adminunblockQuestion,
+  adminaddTestFile,
 };

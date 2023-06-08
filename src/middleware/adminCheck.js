@@ -14,7 +14,6 @@ async function adminCheck(req, res, next) {
           errorResponse("You are not authorized to access", res.statusCode)
         );
     } else {
-      console.log("ind ata");
       const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       const userId = decode.id;
       console.log("id", userId);
@@ -29,12 +28,15 @@ async function adminCheck(req, res, next) {
         ],
       });
 
+      console.log("user", user);
       if (user) {
         let role = await models.Role.findOne({
           where: {
             id: user.Role.id,
           },
         });
+
+        console.log("user role", role);
 
         if (role.name === "Admin") {
           next();
@@ -51,7 +53,7 @@ async function adminCheck(req, res, next) {
       } else {
         return res
           .status(401)
-          .json(errorResponse("Invalid ADmin", res.statusCode));
+          .json(errorResponse("Invalid Admin", res.statusCode));
       }
     }
   } catch (error) {

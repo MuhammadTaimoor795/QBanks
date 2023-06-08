@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Option.belongsTo(models.Question);
 
-      Option.hasMany(models.UserResponse);
+      Option.hasMany(models.UserResponseOptions);
     }
   }
   Option.init(
@@ -25,20 +25,20 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.TEXT,
       istrue: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: false,
       },
       isactive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
-      // createdAt: {
-      //   allowNull: false,
-      //   type: DataTypes.DATE,
-      // },
-      // updatedAt: {
-      //   allowNull: false,
-      //   type: DataTypes.DATE,
-      // },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,

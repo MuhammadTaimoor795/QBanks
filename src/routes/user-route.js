@@ -1,6 +1,11 @@
 const router = require("express").Router();
 const auth = require("../middleware/MiddleWareCon");
 const { schemas, validationSchema } = require("../middleware/joivalidation");
+const {
+  validationSchemaQuery,
+  newschem,
+} = require("../middleware/joivalidationQuery");
+
 /// from User controller
 
 const { upload } = require("../middleware/uploadByMulter");
@@ -19,6 +24,9 @@ const {
   userQbank,
   userNewTest,
   userQbankTest,
+  userPauseTest,
+  userResumeTest,
+  userEvualateTest,
 } = require("../controller/user/user-controller");
 const {
   joivalidationQueryParams,
@@ -62,7 +70,10 @@ router.post(
 
 router.get("/profile", auth, userProfile);
 
+// User All Qbanks
 router.get("/qbanks", auth, userQbank);
+
+// All The Test of Qbanks
 router.get("/qbanks/:id", auth, userQbankTest);
 
 // router.get(
@@ -72,7 +83,22 @@ router.get("/qbanks/:id", auth, userQbankTest);
 //   userQbank
 // );
 
-router.post("/test", auth, userNewTest);
+router.post("/test", auth, validationSchema(schemas.user.newtest), userNewTest);
+router.patch(
+  "/test",
+  auth,
+  validationSchema(schemas.user.pausetest),
+  userPauseTest
+);
+
+router.get(
+  "/test/resume/:usertestid",
+  auth,
+  joivalidationQueryParams(paramsSchema.User.resumetest),
+  userResumeTest
+);
+
+router.post("/test/evulate", auth, userEvualateTest);
 
 // router.patch("/updateProfile", auth, upload.single("file"), userProfileUpdate);
 
@@ -80,3 +106,14 @@ router.post("/test", auth, userNewTest);
 // router.patch("/forgotpassword", forgotPasswordController);
 
 module.exports = router;
+
+//
+
+// tutor mode
+// Exam Mode
+// => upload test uploading file
+// user can attemp many test
+
+// report question
+
+//

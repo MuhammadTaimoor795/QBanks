@@ -15,12 +15,6 @@ module.exports = {
       description: {
         type: Sequelize.STRING,
       },
-      category: {
-        type: Sequelize.STRING,
-      },
-      duration: {
-        type: Sequelize.STRING,
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

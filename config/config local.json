@@ -4,18 +4,23 @@
     "password": "",
     "database": "qbanks",
     "host": "localhost",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
     "password": "",
     "database": "qbank",
     "host": "localhost",
-    "dialect": "mysql",
-    "logging": false
+    "dialect": "mysql"
   },
   "production": {
+    "username": "root",
+    "password": "",
+    "database": "qbank",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "productions": {
     "username": "root",
     "password": "",
     "database": "qbank",
