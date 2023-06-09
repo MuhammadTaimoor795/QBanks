@@ -92,10 +92,10 @@ let port = process.env.PORT || 8000;
 app.listen(port, async () => {
   await sequelize.authenticate();
   // console.log(__dirname)
-  await sequelize.sync({ alter: true });
+  //await sequelize.sync({ alter: true });
   //await sequelize.sync({ alter: true, force: true });
   //
-  console.log(`Server Started in This Port  ${port}`);
+  console.log(`Server Started on This Port  ${port}`);
   console.log("DB connected");
 
   // const fs = require("fs");
