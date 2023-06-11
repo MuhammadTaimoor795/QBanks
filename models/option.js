@@ -31,14 +31,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
+      // createdAt: {
+      //   allowNull: false,
+      //   type: DataTypes.DATE,
+      // },
+      // updatedAt: {
+      //   allowNull: false,
+      //   type: DataTypes.DATE,
+      // },
     },
     {
       sequelize,
