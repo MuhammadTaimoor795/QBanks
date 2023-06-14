@@ -99,7 +99,7 @@ async function findUsertestById(testid, userid) {
 
   // check if the test is already incomplete
 
-  let usertest = await checkAlreadyTest(testid, userid);
+  let usertest = true; //await checkAlreadyTest(testid, userid);
   if (test && qbank && usertest) {
     return true;
   }
