@@ -26,6 +26,7 @@ const {
   userresumeTest,
   userevulateTest,
   userallTest,
+  usercompleteTest,
 } = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
@@ -766,6 +767,25 @@ const userEvualateTest = async (req, res, next) => {
       .json(errorResponse(error.message, error.status));
   }
 };
+
+const userCompleteTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let usertestid = req.body.usertestid;
+
+    let usertest = await usercompleteTest(id, usertestid);
+    if (usertest) {
+      return res.status(200).json(success(usertest, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
 module.exports = {
   registerUserController,
   verificationEmail,
@@ -785,4 +805,5 @@ module.exports = {
   userResumeTest,
   userEvualateTest,
   userAllTest,
+  userCompleteTest,
 };

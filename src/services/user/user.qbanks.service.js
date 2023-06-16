@@ -2,7 +2,7 @@ const models = require("../../../models/index");
 const { Op } = require("sequelize");
 const db = require("../../../models/index");
 const { ApiError } = require("../../utils/error");
-const { TestStatus } = require("../../utils/constants");
+const { TestStatus, StudentMode } = require("../../utils/constants");
 
 async function findQbanksByid(id) {
   let qbank = await models.QBanks.findOne({
@@ -257,6 +257,7 @@ async function userevulateTest(reponseid, istrue, optionid) {
       id: reponseid,
     },
   });
+  console.log("Data", userquestion.id);
 
   // check if user is already answer
 
@@ -265,6 +266,8 @@ async function userevulateTest(reponseid, istrue, optionid) {
       UserResponseId: userquestion.id,
     },
   });
+
+  console.log("user option s", useroption);
 
   // for update
   if (useroption.length > 0) {
@@ -277,38 +280,120 @@ async function userevulateTest(reponseid, istrue, optionid) {
     if (!deleteres) {
       throw new ApiError("Error in deleting Response", { status: 500 });
     }
+  }
+  // update is true or not
 
-    // update is true or not
-
-    let updateresponse = await models.UserResponse.update(
-      {
-        isCorrect: istrue,
+  let updateresponse = await models.UserResponse.update(
+    {
+      isCorrect: istrue,
+    },
+    {
+      where: {
+        id: reponseid,
       },
+    }
+  );
+
+  if (updateresponse) {
+    for (let option of optionid) {
+      let useroption = await models.UserResponseOptions.create({
+        UserResponseId: userquestion.id,
+        OptionId: option,
+      });
+    }
+  }
+  if (updateresponse) {
+    return true;
+  }
+
+  // let userquestions = await getUserTestQuestions(usertestid);
+  // if (userquestions) {
+  //   return userquestions;
+  // }
+}
+
+async function usercompleteTest(userid, usertestid) {
+  let completetest = await models.UserTest.update(
+    {
+      status: TestStatus.COMPLETED,
+    },
+    {
+      where: {
+        UserId: userid,
+        id: usertestid,
+      },
+    }
+  );
+
+  let report = await models.UserTest.findOne({
+    where: {
+      UserId: userid,
+      id: usertestid,
+    },
+    include: [
       {
-        where: {
-          id: reponseid,
-        },
-      }
-    );
+        model: models.UserResponse,
+        include: [
+          {
+            model: models.Question,
+          },
+          {
+            model: models.UserResponseOptions,
+            include: [
+              {
+                model: models.Option,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
 
-    if (updateresponse) {
-      for (let option of optionid) {
-        let useroption = await models.UserResponseOptions.create({
-          UserResponseId: userquestion.id,
-          OptionId: option,
-        });
-      }
+  let obj = {
+    usertestid: report.id,
+    status: report.status,
+    duration: report.duration,
+    completeDuration: report.completeDuration,
+    remainingDuration: report.remainingDuration,
+    mode: report.mode,
+    questons: await transformUserResponses(report.UserResponses, report.mode),
+  };
+  if (report) {
+    return obj;
+  }
+  //return report;
+}
+function transformUserResponses(UserResponses, mode) {
+  return UserResponses.map((userResponse) => {
+    const {
+      id: uuid,
+      QuestionId: questionId,
+      Question: { description: question, explanation },
+      UserResponseOptions,
+    } = userResponse;
+
+    const userOptions = UserResponseOptions.map((userOption) => {
+      const {
+        OptionId: optionId,
+        Option: { name: description },
+      } = userOption;
+      return { optionId, description };
+    });
+
+    const userResponseObject = {
+      uuid,
+      questionId,
+      question,
+      useroptions: userOptions,
+    };
+
+    if (mode == StudentMode.TUTOR) {
+      userResponseObject.explanation = explanation;
     }
 
-    if (updateresponse) {
-      return true;
-    }
-  }
-
-  let userquestions = await getUserTestQuestions(usertestid);
-  if (userquestions) {
-    return userquestions;
-  }
+    return userResponseObject;
+  });
 }
 module.exports = {
   findQbanksByid,
@@ -320,4 +405,5 @@ module.exports = {
   userresumeTest,
   userevulateTest,
   userallTest,
+  usercompleteTest,
 };

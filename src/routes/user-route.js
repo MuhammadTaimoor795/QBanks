@@ -28,6 +28,7 @@ const {
   userResumeTest,
   userEvualateTest,
   userAllTest,
+  userCompleteTest,
 } = require("../controller/user/user-controller");
 const {
   joivalidationQueryParams,
@@ -111,6 +112,8 @@ router.post(
   validationSchema(schemas.user.evulatetest),
   userEvualateTest
 );
+
+router.patch("/test/complete", auth, userCompleteTest);
 
 // router.patch("/updateProfile", auth, upload.single("file"), userProfileUpdate);
 
