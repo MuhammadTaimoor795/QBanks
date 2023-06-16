@@ -395,6 +395,77 @@ function transformUserResponses(UserResponses, mode) {
     return userResponseObject;
   });
 }
+
+async function userAllqbanks(id) {
+  let user = await models.User.findOne({
+    where: {
+      id,
+    },
+    include: [
+      {
+        required: false,
+        where: {
+          active: true,
+        },
+        model: models.UserQbank,
+        include: [
+          {
+            model: models.QBanks,
+            include: [
+              {
+                model: models.Test,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  let data = await transformUserQbanks(user.UserQbanks);
+
+  for (let qbank of data) {
+    for (let test of qbank.Tests) {
+      let findtest = await models.UserTest.findOne({
+        where: {
+          TestId: test.id,
+        },
+      });
+      if (findtest) {
+        test.status = findtest.status;
+      }
+    }
+  }
+
+  if (user) {
+    return data;
+  }
+}
+function transformUserQbanks(UserQbanks) {
+  return UserQbanks.map((userQbank) => {
+    const {
+      id,
+      QBankId,
+      QBank: { name: QBankName, description: QBankDesc, Tests },
+    } = userQbank;
+
+    const transformedTests = Tests.map((test) => {
+      const { id, name, description } = test;
+      return { id, name, description };
+    });
+
+    const transformedData = {
+      id,
+      QBankId,
+      QBankName,
+      QBankDesc,
+      Tests: transformedTests,
+    };
+
+    return transformedData;
+  });
+}
+
 module.exports = {
   findQbanksByid,
   VerifyUserQbanks,
@@ -406,4 +477,5 @@ module.exports = {
   userevulateTest,
   userallTest,
   usercompleteTest,
+  userAllqbanks,
 };

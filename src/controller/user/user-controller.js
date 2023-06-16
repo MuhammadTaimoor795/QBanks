@@ -27,6 +27,7 @@ const {
   userevulateTest,
   userallTest,
   usercompleteTest,
+  userAllqbanks,
 } = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
@@ -566,30 +567,7 @@ const userPasswordUpdate = async (req, res, next) => {
 const userQbank = async (req, res, next) => {
   try {
     let id = req.user.id;
-    let user = await models.User.findOne({
-      where: {
-        id,
-      },
-      include: [
-        {
-          required: false,
-          where: {
-            active: true,
-          },
-          model: models.UserQbank,
-          include: [
-            {
-              model: models.QBanks,
-              include: [
-                {
-                  model: models.Test,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
+    let user = await userAllqbanks(id);
 
     if (user) {
       return res.status(200).json(success(user, res.statusCode));
@@ -786,6 +764,7 @@ const userCompleteTest = async (req, res, next) => {
       .json(errorResponse(error.message, error.status));
   }
 };
+
 module.exports = {
   registerUserController,
   verificationEmail,
