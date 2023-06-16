@@ -594,7 +594,7 @@ const userQbankTest = async (req, res, next) => {
     }
 
     if (verifyqbank) {
-      let test = await qbanksTests(qbankid);
+      let test = await qbanksTests(qbankid, id);
       if (test) {
         return res.status(200).json(success(test, res.statusCode));
       }

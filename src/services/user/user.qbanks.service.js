@@ -41,7 +41,7 @@ async function VerifyUserQbanks(userId, qbankid) {
   }
 }
 
-async function qbanksTests(qbankid) {
+async function qbanksTests(qbankid, id) {
   let tests = await models.Test.findAll({
     where: {
       QBankId: qbankid,
@@ -49,13 +49,32 @@ async function qbanksTests(qbankid) {
     },
   });
 
+  let alltest = [];
   if (tests.length <= 0) {
-    throw new ApiError("There are no test availble ", {
-      status: 400,
-    });
+    return alltest;
+    // throw new ApiError("There are no test availble ", {
+    //   status: 400,
+    // });
   } else {
-    return tests;
+    for (let test of tests) {
+      let obj = {};
+      obj.id = test.id;
+      obj.name = test.name;
+      obj.description = test.description;
+
+      let findtest = await models.UserTest.findOne({
+        where: {
+          TestId: test.id,
+          UserId: id,
+        },
+      });
+      if (findtest) {
+        obj.status = findtest.status;
+      }
+      alltest.push(obj);
+    }
   }
+  return alltest;
 }
 
 // async function findUserByEmail(email) {
@@ -124,8 +143,6 @@ async function checkAlreadyTest(testid, userid) {
 }
 
 async function usernewTest(userid, testid, duration, mode) {
-  console.log("Test");
-  console.table({ testid, userid, duration, mode });
   let usertest = await models.UserTest.create({
     UserId: userid,
     TestId: testid,
