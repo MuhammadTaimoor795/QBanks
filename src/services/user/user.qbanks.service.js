@@ -70,6 +70,7 @@ async function qbanksTests(qbankid, id) {
       });
       if (findtest) {
         obj.status = findtest.status;
+        obj.usertestid = findtest.id;
       }
       alltest.push(obj);
     }
