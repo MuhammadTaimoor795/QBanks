@@ -143,32 +143,57 @@ async function checkAlreadyTest(testid, userid) {
   }
 }
 
-async function usernewTest(userid, testid, duration, mode) {
-  let usertest = await models.UserTest.create({
-    UserId: userid,
-    TestId: testid,
-    duration,
-    mode,
+async function usernewTest(userid, testid, mode) {
+  let usertest;
+  usertest = await models.UserTest.findOne({
+    where: {
+      TestId: testid,
+      UserId: userid,
+      status: TestStatus.RESET,
+    },
   });
 
-  console.log("Test created", usertest.id);
+  // if not reset create the new test
+  if (!usertest) {
+    console.log("No test found, creating Test");
+    usertest = await models.UserTest.create({
+      UserId: userid,
+      TestId: testid,
+      status: TestStatus.INCOMPLETED,
+      mode,
+    });
+  }
+
   let questions = await models.Question.findAll({
     where: {
       TestId: testid,
       isactive: true,
     },
   });
-  console.log("questions", questions);
+
   for (let question of questions) {
     let createResponse = await models.UserResponse.create({
       UserTestId: usertest.id,
       QuestionId: question.id,
     });
   }
+  // updateing mode of the test
 
-  let userquestions = await getUserTestQuestions(usertest.id);
-  if (userquestions) {
-    return userquestions;
+  let updatemode = await models.UserTest.update(
+    {
+      mode,
+    },
+    {
+      where: {
+        id: usertest.id,
+      },
+    }
+  );
+  if (updatemode) {
+    let userquestions = await getUserTestQuestions(usertest.id);
+    if (userquestions) {
+      return userquestions;
+    }
   }
 }
 
@@ -189,7 +214,7 @@ async function getUserTestQuestions(id) {
     ],
   });
   if (userquestions) {
-    let question = await usertestformat(userquestions);
+    let question = await usertestformat(userquestions, id);
     if (question) {
       return question;
     }
@@ -201,7 +226,7 @@ async function getUserTestQuestions(id) {
   }
 }
 
-async function usertestformat(test) {
+async function usertestformat(test, id) {
   let question = [];
   for (let item of test) {
     let obj = {};
@@ -226,7 +251,11 @@ async function usertestformat(test) {
     question.push(obj);
   }
 
-  return question;
+  let newobj = {};
+  newobj.usertestid = id;
+  newobj.questions = question;
+
+  return newobj;
 }
 async function userpauseTest(userid, usertestid, timeleft) {
   let pausetest = await models.UserTest.update(
@@ -275,17 +304,17 @@ async function userevulateTest(reponseid, istrue, optionid) {
       id: reponseid,
     },
   });
-  console.log("Data", userquestion.id);
+
+  if (!userquestion) {
+    throw new ApiError("Question with this uuid not found", { status: 500 });
+  }
 
   // check if user is already answer
-
   let useroption = await models.UserResponseOptions.findAll({
     where: {
       UserResponseId: userquestion.id,
     },
   });
-
-  console.log("user option s", useroption);
 
   // for update
   if (useroption.length > 0) {
@@ -451,6 +480,7 @@ async function userAllqbanks(id) {
       });
       if (findtest) {
         test.status = findtest.status;
+        test.usertestid = findtest.id;
       }
     }
   }
@@ -484,6 +514,111 @@ function transformUserQbanks(UserQbanks) {
   });
 }
 
+async function userreportTest(userid, usertestid) {
+  let report = await models.UserTest.findOne({
+    where: {
+      UserId: userid,
+      id: usertestid,
+    },
+    include: [
+      {
+        model: models.UserResponse,
+        include: [
+          {
+            model: models.Question,
+          },
+          {
+            model: models.UserResponseOptions,
+            include: [
+              {
+                model: models.Option,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  let obj = {
+    usertestid: report.id,
+    status: report.status,
+    duration: report.duration,
+    completeDuration: report.completeDuration,
+    remainingDuration: report.remainingDuration,
+    mode: report.mode,
+    questons: await transformUserResponses(report.UserResponses, report.mode),
+  };
+  if (report) {
+    return obj;
+  }
+  //return report;
+}
+
+async function findTestReset(testid, userid) {
+  let test = await models.UserTest.findOne({
+    where: {
+      TestId: testid,
+      UserId: userid,
+      status: TestStatus.RESET,
+    },
+  });
+
+  if (!test) {
+    throw new ApiError(`test Not Found with this is ${testid}`, {
+      status: 404,
+    });
+  }
+  // veifty this test is in Qbanks
+  let qbank = await VerifyUserQbanks(userid, test.QBankId);
+
+  if (!qbank) {
+    throw new ApiError("This Test is not include in your Qbanks ", {
+      status: 400,
+    });
+  }
+  // if invalid id
+
+  // if test is not active
+  if (test.isactive === false) {
+    throw new ApiError(`This test is blocked by Admin`, {
+      status: 404,
+    });
+  }
+
+  // check if the test is already incomplete
+
+  let usertest = true; //await checkAlreadyTest(testid, userid);
+  if (test && qbank && usertest) {
+    return true;
+  }
+}
+
+async function userresetTest(userid, testid, mode) {
+  let usertest = await models.UserTest.findOne({
+    where: {
+      TestId: testid,
+      UserId: userid,
+      status: TestStatus.RESET,
+    },
+  });
+
+  if (!usertest) {
+    usertest = await models.UserTest.create({
+      TestId: testid,
+      UserId: userid,
+      status: TestStatus.RESET,
+      mode,
+    });
+    return true;
+  } else {
+    throw new ApiError("Qbank Not Found with this is Id Or Blocked By Admin", {
+      status: 400,
+    });
+  }
+
+  // updateing mode of the test
+}
 module.exports = {
   findQbanksByid,
   VerifyUserQbanks,
@@ -496,4 +631,6 @@ module.exports = {
   userallTest,
   usercompleteTest,
   userAllqbanks,
+  userreportTest,
+  userresetTest,
 };

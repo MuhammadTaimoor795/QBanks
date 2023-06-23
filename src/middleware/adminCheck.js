@@ -16,7 +16,7 @@ async function adminCheck(req, res, next) {
     } else {
       const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       const userId = decode.id;
-      console.log("id", userId);
+
       const user = await models.User.findOne({
         where: {
           id: userId,
@@ -28,7 +28,6 @@ async function adminCheck(req, res, next) {
         ],
       });
 
-      console.log("user", user);
       if (user) {
         let role = await models.Role.findOne({
           where: {

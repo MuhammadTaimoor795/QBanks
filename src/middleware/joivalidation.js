@@ -98,7 +98,7 @@ const schemas = {
     }),
     newtest: Joi.object({
       testid: Joi.string().required(),
-      duration: Joi.number(),
+      // duration: Joi.number(),
       mode: Joi.string()
         .valid(...Object.values(StudentMode))
         .required(),
@@ -109,9 +109,15 @@ const schemas = {
     }),
 
     evulatetest: Joi.object({
-      uuid: Joi.string().required(),
-      istrue: Joi.boolean(),
-      optionid: Joi.array().items(Joi.string()),
+      questions: Joi.array()
+        .items(
+          Joi.object({
+            uuid: Joi.string().required(),
+            istrue: Joi.boolean(),
+            optionid: Joi.array().items(Joi.string()),
+          })
+        )
+        .required(),
     }),
   },
   Qbanks: {

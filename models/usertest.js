@@ -25,11 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING,
-        defaultValue: TestStatus.INCOMPLETED,
+        defaultValue: TestStatus.RESET,
       },
       duration: {
         type: DataTypes.DECIMAL,
-        allowNull: false,
       },
       completeDuration: {
         type: DataTypes.DECIMAL,

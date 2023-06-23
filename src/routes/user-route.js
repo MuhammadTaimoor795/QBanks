@@ -29,6 +29,7 @@ const {
   userEvualateTest,
   userAllTest,
   userCompleteTest,
+  userResetTest,
 } = require("../controller/user/user-controller");
 const {
   joivalidationQueryParams,
@@ -114,6 +115,8 @@ router.post(
 );
 
 router.patch("/test/complete", auth, userCompleteTest);
+
+router.patch("/test/reset", auth, userResetTest);
 
 // router.patch("/updateProfile", auth, upload.single("file"), userProfileUpdate);
 

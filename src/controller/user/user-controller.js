@@ -7,7 +7,12 @@ const jwt = require("jsonwebtoken");
 const authServices = require("../../auth/helper/authService");
 const emailValidator = require("email-validator");
 const multer = require("multer");
-const { success, errorResponse } = require("../../utils/constants");
+const {
+  success,
+  errorResponse,
+  TestStatus,
+  StudentMode,
+} = require("../../utils/constants");
 
 const {
   encypttext,
@@ -28,6 +33,8 @@ const {
   userallTest,
   usercompleteTest,
   userAllqbanks,
+  userreportTest,
+  userresetTest,
 } = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
@@ -642,7 +649,6 @@ const userNewTest = async (req, res, next) => {
   try {
     let id = req.user.id;
     let testid = req.body.testid;
-    let duration = req.body.duration;
     let mode = req.body.mode;
 
     // console.table({ id, testid });
@@ -651,7 +657,7 @@ const userNewTest = async (req, res, next) => {
     if (test) {
       // creating new Test
 
-      let usertest = await usernewTest(id, testid, duration, mode);
+      let usertest = await usernewTest(id, testid, mode);
       if (usertest) {
         return res.status(201).json(success(usertest, res.statusCode));
       }
@@ -730,12 +736,19 @@ const userEvualateTest = async (req, res, next) => {
     // let reponseid = req.params.uuid;
     // let istrue=req.param
 
-    let { uuid, istrue, optionid } = req.body;
+    let { questions } = req.body;
 
-    let usertest = await userevulateTest(uuid, istrue, optionid);
-    if (usertest) {
-      return res.status(200).json(success("Successfull", res.statusCode));
+    uuid, istrue, optionid;
+
+    for (let item of questions) {
+      let usertest = await userevulateTest(
+        item.uuid,
+        item.istrue,
+        item.optionid
+      );
     }
+
+    return res.status(200).json(success("Successfull", res.statusCode));
   } catch (error) {
     if (error.status === undefined) {
       error.status = 500;
@@ -752,6 +765,45 @@ const userCompleteTest = async (req, res, next) => {
     let usertestid = req.body.usertestid;
 
     let usertest = await usercompleteTest(id, usertestid);
+    if (usertest) {
+      return res.status(200).json(success(usertest, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
+
+const userResetTest = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let testid = req.body.testid;
+    let mode = StudentMode.EXAM;
+    let usertest = await userresetTest(id, testid, mode);
+
+    if (usertest) {
+      return res.status(200).json(success(true, res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
+
+const userTestReport = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let usertestid = req.body.usertestid;
+
+    let usertest = await userreportTest(id, usertestid);
     if (usertest) {
       return res.status(200).json(success(usertest, res.statusCode));
     }
@@ -785,4 +837,5 @@ module.exports = {
   userEvualateTest,
   userAllTest,
   userCompleteTest,
+  userResetTest,
 };

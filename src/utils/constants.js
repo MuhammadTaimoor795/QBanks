@@ -37,6 +37,7 @@ const TestStatus = Object.freeze({
   COMPLETED: "COMPLETED",
   INCOMPLETED: "INCOMPLETED",
   PAUSE: "PAUSE",
+  RESET: "RESET",
 
   // for Getting ALL Test
   ALL: "ALL",
