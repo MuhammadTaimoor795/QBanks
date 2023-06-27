@@ -284,7 +284,7 @@ async function userresumeTest(userid, usertestid) {
 
   if (userquestions) {
     return {
-      mode: usertest.mode,
+      usertestdetail: usertest,
       userquestions,
     };
   }
