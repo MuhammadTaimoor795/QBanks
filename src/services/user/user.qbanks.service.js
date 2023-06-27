@@ -281,11 +281,11 @@ async function userresumeTest(userid, usertestid) {
   });
 
   let userquestions = await getUserTestQuestions(usertestid);
-  let
+
   if (userquestions) {
     return {
-      mode:usertest.mode,
-      userquestions
+      mode: usertest.mode,
+      userquestions,
     };
   }
 }
