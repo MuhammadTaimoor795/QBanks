@@ -276,9 +276,17 @@ async function userpauseTest(userid, usertestid, timeleft) {
   }
 }
 async function userresumeTest(userid, usertestid) {
+  let usertest = await models.UserTest.findOne({
+    id: usertestid,
+  });
+
   let userquestions = await getUserTestQuestions(usertestid);
+  let
   if (userquestions) {
-    return userquestions;
+    return {
+      mode:usertest.mode,
+      userquestions
+    };
   }
 }
 
