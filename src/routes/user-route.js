@@ -50,7 +50,11 @@ router.post(
 
 router.post("/logout", auth, logoutUserController);
 
-router.post("/token", refreshTokens);
+router.post(
+  "/token",
+  validationSchema(schemas.user.refreshtoken),
+  refreshTokens
+);
 
 router.get("/verify", verificationEmail);
 

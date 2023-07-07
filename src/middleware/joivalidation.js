@@ -119,6 +119,9 @@ const schemas = {
         )
         .required(),
     }),
+    refreshtoken: Joi.object({
+      token: Joi.string().required(),
+    }),
   },
   Qbanks: {
     create: Joi.object({

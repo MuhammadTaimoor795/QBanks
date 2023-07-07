@@ -738,7 +738,7 @@ const userEvualateTest = async (req, res, next) => {
 
     let { questions } = req.body;
 
-    uuid, istrue, optionid;
+    // uuid, istrue, optionid;
 
     for (let item of questions) {
       let usertest = await userevulateTest(
