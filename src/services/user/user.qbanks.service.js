@@ -307,6 +307,7 @@ async function userallTest(userid, query) {
 
 async function userevulateTest(reponseid, istrue, optionid) {
   // find questions
+
   let userquestion = await models.UserResponse.findOne({
     where: {
       id: reponseid,
@@ -627,6 +628,39 @@ async function userresetTest(userid, testid, mode) {
 
   // updateing mode of the test
 }
+async function usertestaddTime(usertestid, duration) {
+  let usertest = await models.UserTest.findOne({
+    where: {
+      id: usertestid,
+    },
+  });
+
+  if (usertest) {
+    let addtime = await models.UserTest.update(
+      {
+        duration,
+      },
+      {
+        where: {
+          id: usertestid,
+        },
+      }
+    );
+    if (addtime) {
+      return true;
+    }
+    // Project.update(
+    //   { title: 'a very different title now' },
+    //   { where: { _id: 1 } }
+    // )
+  } else {
+    throw new ApiError("User Test id is not Valid ", {
+      status: 400,
+    });
+  }
+
+  // updateing mode of the test
+}
 module.exports = {
   findQbanksByid,
   VerifyUserQbanks,
@@ -641,4 +675,5 @@ module.exports = {
   userAllqbanks,
   userreportTest,
   userresetTest,
+  usertestaddTime,
 };

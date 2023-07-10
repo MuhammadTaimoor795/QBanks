@@ -35,6 +35,7 @@ const {
   userAllqbanks,
   userreportTest,
   userresetTest,
+  usertestaddTime,
 } = require("../../services/user/user.qbanks.service");
 
 const registerUserController = async (req, res, next) => {
@@ -798,6 +799,28 @@ const userResetTest = async (req, res, next) => {
   }
 };
 
+const userTestSettime = async (req, res, next) => {
+  try {
+    let id = req.user.id;
+    let testid = req.body.usertestid;
+    let duration = req.body.duration;
+    let usertest = await usertestaddTime(testid, duration);
+
+    if (usertest) {
+      return res
+        .status(200)
+        .json(success("Time is Added Successfully", res.statusCode));
+    }
+  } catch (error) {
+    if (error.status === undefined) {
+      error.status = 500;
+    }
+    return res
+      .status(error.status)
+      .json(errorResponse(error.message, error.status));
+  }
+};
+
 const userTestReport = async (req, res, next) => {
   try {
     let id = req.user.id;
@@ -838,4 +861,5 @@ module.exports = {
   userAllTest,
   userCompleteTest,
   userResetTest,
+  userTestSettime,
 };
