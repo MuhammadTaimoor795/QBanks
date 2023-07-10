@@ -225,6 +225,37 @@ async function getUserTestQuestions(id) {
     });
   }
 }
+async function getUserTestQuestionsResume(id) {
+  let userquestions = await models.UserResponse.findAll({
+    where: {
+      UserTestId: id,
+    },
+    include: [
+      {
+        model: models.Question,
+        include: [
+          {
+            model: models.Option,
+          },
+        ],
+      },
+      {
+        model: models.UserResponseOptions,
+      },
+    ],
+  });
+  if (userquestions) {
+    let question = await usertestformatResume(userquestions, id);
+    if (question) {
+      return question;
+    }
+    //return userquestions;
+  } else {
+    throw new ApiError(`Invalid Test id`, {
+      status: 404,
+    });
+  }
+}
 
 async function usertestformat(test, id) {
   let question = [];
@@ -257,6 +288,46 @@ async function usertestformat(test, id) {
 
   return newobj;
 }
+
+async function usertestformatResume(test, id) {
+  let question = [];
+  for (let item of test) {
+    let obj = {};
+
+    obj.uuid = item.id;
+    obj.isCorrect = item.isCorrect;
+    obj.questionId = item.Question.id;
+    obj.question = item.Question.description;
+    obj.explanation = item.Question.explanation;
+
+    let options = [];
+    for (let option of item.Question.Options) {
+      let newobj = {};
+      newobj.id = option.id;
+      newobj.name = option.name;
+      newobj.istrue = option.istrue;
+
+      options.push(newobj);
+    }
+    obj.options = options;
+    let useroption = [];
+
+    if (item.UserResponseOptions.length > 0) {
+      for (let op of item.UserResponseOptions) {
+        useroption.push(op.OptionId);
+      }
+    }
+
+    question.push(obj);
+    obj.userSelectedOption = useroption;
+  }
+
+  let newobj = {};
+  newobj.usertestid = id;
+  newobj.questions = question;
+
+  return newobj;
+}
 async function userpauseTest(userid, usertestid, timeleft) {
   let pausetest = await models.UserTest.update(
     {
@@ -280,7 +351,7 @@ async function userresumeTest(userid, usertestid) {
     id: usertestid,
   });
 
-  let userquestions = await getUserTestQuestions(usertestid);
+  let userquestions = await getUserTestQuestionsResume(usertestid);
 
   if (userquestions) {
     return {
