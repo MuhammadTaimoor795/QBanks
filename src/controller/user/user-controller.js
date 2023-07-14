@@ -783,8 +783,7 @@ const userResetTest = async (req, res, next) => {
   try {
     let id = req.user.id;
     let testid = req.body.testid;
-    let mode = StudentMode.EXAM;
-    let usertest = await userresetTest(id, testid, mode);
+    let usertest = await userresetTest(id, testid);
 
     if (usertest) {
       return res.status(200).json(success(true, res.statusCode));

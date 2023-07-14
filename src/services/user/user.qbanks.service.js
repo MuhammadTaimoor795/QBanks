@@ -144,25 +144,14 @@ async function checkAlreadyTest(testid, userid) {
 }
 
 async function usernewTest(userid, testid, mode) {
-  let usertest;
-  usertest = await models.UserTest.findOne({
-    where: {
-      TestId: testid,
-      UserId: userid,
-      status: TestStatus.RESET,
-    },
-  });
-
   // if not reset create the new test
-  if (!usertest) {
-    console.log("No test found, creating Test");
-    usertest = await models.UserTest.create({
-      UserId: userid,
-      TestId: testid,
-      status: TestStatus.INCOMPLETED,
-      mode,
-    });
-  }
+
+  let usertest = await models.UserTest.create({
+    UserId: userid,
+    TestId: testid,
+    status: TestStatus.INCOMPLETED,
+    mode,
+  });
 
   let questions = await models.Question.findAll({
     where: {
@@ -179,21 +168,9 @@ async function usernewTest(userid, testid, mode) {
   }
   // updateing mode of the test
 
-  let updatemode = await models.UserTest.update(
-    {
-      mode,
-    },
-    {
-      where: {
-        id: usertest.id,
-      },
-    }
-  );
-  if (updatemode) {
-    let userquestions = await getUserTestQuestions(usertest.id);
-    if (userquestions) {
-      return userquestions;
-    }
+  let userquestions = await getUserTestQuestions(usertest.id);
+  if (userquestions) {
+    return userquestions;
   }
 }
 
@@ -679,20 +656,17 @@ async function userresetTest(userid, testid, mode) {
     where: {
       TestId: testid,
       UserId: userid,
-      status: TestStatus.RESET,
     },
   });
 
-  if (!usertest) {
-    usertest = await models.UserTest.create({
-      TestId: testid,
-      UserId: userid,
-      status: TestStatus.RESET,
-      mode,
+  if (usertest) {
+    usertest = await models.UserTest.destroy({
+      where: { TestId: testid, UserId: userid },
+      cascade: true,
     });
     return true;
   } else {
-    throw new ApiError("Qbank Not Found with this is Id Or Blocked By Admin", {
+    throw new ApiError("Test Not found with this ", {
       status: 400,
     });
   }

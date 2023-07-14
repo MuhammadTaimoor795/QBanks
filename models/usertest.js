@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       UserTest.belongsTo(models.User);
       UserTest.belongsTo(models.Test);
 
-      UserTest.hasMany(models.UserResponse);
+      UserTest.hasMany(models.UserResponse, { onDelete: "CASCADE" });
     }
   }
   UserTest.init(

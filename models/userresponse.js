@@ -12,8 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
       UserResponse.belongsTo(models.UserTest);
       UserResponse.belongsTo(models.Question);
-
-      UserResponse.hasMany(models.UserResponseOptions);
+      UserResponse.hasMany(models.UserResponseOptions, { onDelete: "CASCADE" });
     }
   }
   UserResponse.init(
